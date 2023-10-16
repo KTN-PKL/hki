@@ -5,7 +5,7 @@
             <div class="xformdm">
                 <div class="card-header bg-primary text-light pt-3 rounded">
                     <center>
-                        <h3>Tambah PO Supplier</h3>
+                        <h3>Tambah PO Supplierz</h3>
                     </center>
                 </div>
 
