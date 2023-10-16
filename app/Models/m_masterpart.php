@@ -38,4 +38,9 @@ class m_masterpart extends Model
     {
         return DB::table('master_part')->where('id_part', $id)->delete();
     }
+
+    public function dataSupplier()
+    {
+        return DB::table('users')->join('users_detail', 'users.id','=','users_detail.id_user')->where('users.role_id', '=', 3)->get();
+    }
 }

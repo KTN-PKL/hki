@@ -109,4 +109,10 @@ class m_user extends Model
     {
         return DB::table('users_detail')->where('id_user', $id)->delete();
     }
+
+
+    public function getName_Perusahaan($id)
+    {
+        return DB::table('users')->join('users_detail','users.id','=','users_detail.id_user')->where('id_perusahaan', $id)->first();
+    }
 }

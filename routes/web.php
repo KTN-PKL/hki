@@ -53,6 +53,9 @@ Route::controller(c_masterpart::class)->middleware('auth')->group(function () {
     Route::post('hki/part/update/{id}', 'update')->name('hki.part.update');
     Route::get('hki/part/destroy/{id}', 'destroy')->name('hki.part.destroy');
 
+        // js
+        Route::get('getnama/{id}', 'getNama')->name('getnama');
+
 });
 
 // Hki PO

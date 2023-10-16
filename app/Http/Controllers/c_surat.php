@@ -292,13 +292,25 @@ if ($lastSurat) {
         if (!$surat) {
             return response()->json(['message' => 'Data not found'], 404);
         }
-        //Hapus data stok
-        $this->surat->deleteRow('stocks','no_surat',$id);
+        $data = [
+            'detail'=> $this->surat->detailSurat($id),
+        ];
+        $no = 1;
+        foreach ($data['detail'] as $detail) {
+            $id_po = $this->PO->getPoByOrdNum($detail->order_number);
+            foreach($id_po as $id){
+                $back_qty = intval($id->order_qty) + intval($detail->qty_sent);
+                // dd($id->id_po);
+                $this->PO->updatePODetails($detail->order_number,$id->id_po,['order_qty' => $back_qty]);
+            }
+        }
+        $this->PO->deleteRow('stocks','no_surat',$id);
         // Hapus detail surat terlebih dahulu karena memiliki relasi dengan no_surat
         $surat->detailSurat1()->delete();
         // Hapus data surat
         $surat->delete();
         return redirect()->route('subcon.surat.index')->with('success', 'Berhasil Dihapus');
+        
     }
 
     public function subcon_scanSurat()

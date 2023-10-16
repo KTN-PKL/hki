@@ -27,6 +27,7 @@ class c_masterpart extends Controller
     {
         $data =[
             'produser' => $this->part->Dataproduser(),
+            'perusahaan' => $this->part->dataSupplier(),
         ];
         return view ('hki.managePart.create',$data);
     }
@@ -107,6 +108,16 @@ class c_masterpart extends Controller
     {
         $this->part->deleteData($id);
         return redirect()->route('hki.part.index')->with('success','Berhasil Dihapus');
+    }
+
+
+    // js
+    public function getNama($id)
+    {
+        $getNama = $this->user->getName_Perusahaan($id);
+        $nama = $getNama->nama;
+        return $nama;
+        
     }
     
 }

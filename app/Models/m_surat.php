@@ -66,7 +66,7 @@ class m_surat extends Model
     }
     public function detailSurat($id)
     {
-        return DB::table('surat')->join('surat_details', 'surat.no_surat','=','surat_details.no_surat')->join('stocks', 'stocks.order_number','=','surat_details.order_number')->where('id',$id)->get();
+        return DB::table('surat')->join('surat_details', 'surat.no_surat','=','surat_details.no_surat')->join('stocks', 'stocks.order_number','=','surat_details.order_number')->where('surat_details.no_surat',$id)->get();
     }
     public function detailSurat2($id)
     {
@@ -174,9 +174,9 @@ class m_surat extends Model
         return DB::table('surat_supplier')->max('no_surat');
     }
 
-    public function deleteRow($table,$key,$val){
-        return DB::table($table)->where($key,$val)->delete();
-    }
+    // public function deleteRow($table,$key,$val){
+    //     return DB::table($table)->where($key,$val)->delete();
+    // }
 
     public function getPoBySurat($id_surat){
         return DB::table('purchasing')

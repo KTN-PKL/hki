@@ -350,6 +350,24 @@ class m_purchasingOrder extends Model
         ->min('sisa');
     }
 
+    public function countPOById($no_surat)
+    {
+        return DB::table('surat_details')
+        ->where('no_surat',$no_surat)
+        ->sum('surat_details.qty');
+    }
+    public function deleteRow($table,$key,$val){
+        return DB::table($table)->where($key,$val)->delete();
+    }
+
+    public function getPOByOrdNum($order_number){
+        return DB::table('purchasing_details')
+        ->join('purchasing','purchasing_details.id_po','=','purchasing.id_po')
+        ->where('purchasing_details.order_number', $order_number)
+        ->where('purchasing.class', 'SUBCON')
+        ->get();
+    }
+
     public function validateSurat($no_surat){
         return DB::table('surat_details')
         ->where('surat_details.no_surat', $no_surat)
