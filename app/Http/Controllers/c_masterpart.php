@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\m_masterpart;
 use App\Models\m_user;
 use App\Models\m_role;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
+use App\Imports\PartImport;
 
 class c_masterpart extends Controller
 {
@@ -20,6 +23,7 @@ class c_masterpart extends Controller
     {
         $data =[
             'part' => $this->part->datapart(),
+            'produser' => $this->user->produserData(),
         ];
         return view ('hki.managePart.index',$data);
     }
@@ -40,6 +44,9 @@ class c_masterpart extends Controller
             'part_name' => 'required',
             'composition' => 'required|numeric',
             'unit_price' => 'required|numeric',
+            'drawing_no' => 'required',
+            'class_part' => 'required',
+            'effective_date' => 'required',
         ]);
         $id=$this->part->checkID();
         if ($id==null) {
@@ -52,6 +59,9 @@ class c_masterpart extends Controller
             'part_name' => $request->part_name,
             'composition' => $request->composition,
             'unit_price' => $request->unit_price,
+            'drawing_no' => $request->drawing_no,
+            'class_part' => $request->class_part,
+            'effective_date' => $request->effective_date,
         ]);
         } else{
             $idMax=$this->part->maxIditem();
@@ -63,6 +73,9 @@ class c_masterpart extends Controller
                 'part_name' => $request->part_name,
                 'composition' => $request->composition,
                 'unit_price' => $request->unit_price,
+                'drawing_no' => $request->drawing_no,
+                'class_part' => $request->class_part,
+                'effective_date'=> $request->effective_date,
             ]);
         }
         return redirect()->route('hki.part.index')->with('success', 'Part berhasil ditambahkan.');
@@ -86,6 +99,9 @@ class c_masterpart extends Controller
             'part_name' => 'required|string',
             'composition' => 'required|numeric',
             'unit_price' => 'required|numeric',
+            'drawing_no' => 'required',
+            'class_part' => 'required',
+            'effective_date' => 'required',
         ]);
         
         // Find the part to be updated
@@ -97,7 +113,9 @@ class c_masterpart extends Controller
         $part->part_name = $validatedData['part_name'];
         $part->composition = $validatedData['composition'];
         $part->unit_price = $validatedData['unit_price'];
-
+        $part->drawing_no = $validatedData['drawing_no'];
+        $part->class_part = $validatedData['class_part'];
+        $part->effective_date = $validatedData['effective_date'];
         // Save the updated part
         $part->save();
 
@@ -110,13 +128,28 @@ class c_masterpart extends Controller
         return redirect()->route('hki.part.index')->with('success','Berhasil Dihapus');
     }
 
+    public function import(Request $request){
+        $data = Excel::toArray([], $request->file('excel')->store('files'));
+     
+        if ($data[0][1][1] <> $request->nama){
+            return redirect()->route('hki.part.index')->with('success','Terjadi Perbedaan Produser Part');
+        }else{
+            $data = Excel::import(new PartImport($request->id_user), $request->file('excel')->store('files'));
+            return redirect()->route('hki.part.index')->with('success','Import Part');
+        }
+    }
+
 
     // js
     public function getNama($id)
     {
         $getNama = $this->user->getName_Perusahaan($id);
-        $nama = $getNama->nama;
-        return $nama;
+        $data = [
+            'id' => $getNama->id_perusahaan,
+            'nama' => $getNama->nama,
+        ];
+    
+        return response()->json($data);
         
     }
     

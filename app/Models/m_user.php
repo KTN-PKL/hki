@@ -13,6 +13,11 @@ class m_user extends Model
         return DB::table('users')->join('users_detail', 'users.id','=','users_detail.id_user')->join('role', 'users.role_id','=','role.role_id')->get();
     }
 
+    public function produserData()
+    {
+        return DB::table('users')->join('users_detail', 'users.id','=','users_detail.id_user')->join('role', 'users.role_id','=','role.role_id')->whereNot('users.role_id', 1)->get();
+    }
+
     public function addData($data)
     {
         DB::table('users')->insert($data);
@@ -113,6 +118,6 @@ class m_user extends Model
 
     public function getName_Perusahaan($id)
     {
-        return DB::table('users')->join('users_detail','users.id','=','users_detail.id_user')->where('id_perusahaan', $id)->first();
+        return DB::table('users')->join('users_detail','users.id','=','users_detail.id_user')->where('id_user', $id)->first();
     }
 }

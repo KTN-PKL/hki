@@ -12,7 +12,7 @@ class m_masterpart extends Model
     protected $table = 'master_part';
     protected $primaryKey = 'id_part'; 
     public $timestamps = false;
-    protected $fillable = ['id_part','id_user', 'part_no', 'part_name', 'composition', 'unit_price'];
+    protected $fillable = ['id_part','id_user', 'part_no', 'part_name', 'composition', 'unit_price','class_part', 'drawing_no', 'effective_date'];
 
     public function checkID()
     {
@@ -43,4 +43,11 @@ class m_masterpart extends Model
     {
         return DB::table('users')->join('users_detail', 'users.id','=','users_detail.id_user')->where('users.role_id', '=', 3)->get();
     }
+
+    public function addData($data)
+    {
+        DB::table('master_part')->insert($data);
+    }
+
+
 }
